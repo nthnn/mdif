@@ -1,0 +1,1 @@
+gcc -o ..\..\dist\generate_gradient.exe -I..\..\src ..\..\src\mdif.cpp generate_gradient.cpp
