@@ -1,0 +1,1 @@
+# MDIF (Minimal Data Image Format)
