@@ -1,0 +1,1 @@
+gcc -static -o ..\..\dist\mdif_png.exe -I..\..\src ..\..\src\mdif.cpp mdif_png.cpp -lpng
