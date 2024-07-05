@@ -1,0 +1,1 @@
+gcc -static -o ..\..\dist\mdif_jpg.exe -I..\..\src ..\..\src\mdif.cpp mdif_jpg.cpp -ljpeg
