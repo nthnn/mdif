@@ -2,6 +2,9 @@
 
 MDIF (Minimal Data Image Format) is a simple and efficient image format designed for use with Diwa, a lightweight implementation of Artificial Neural Networks. MDIF is optimized for environments with limited resources, such as microcontrollers with PSRAM, but it is also suitable for desktop environments.
 
+> [!WARNING]
+> MDIF is underdevelopment and not yet ready.
+
 MDIF is designed to have a minimalistic image data structure that balances simplicity for functionality. It provides essential image handling capabilities while being lightweight enough to be used in resource-constrained environments. The primary use case for MDIF is with Diwa, a neural network library that supports various platforms including microcontrollers, web assembly, and traditional operating systems.
 
 ## Features
