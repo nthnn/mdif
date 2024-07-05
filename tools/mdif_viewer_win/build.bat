@@ -1,0 +1,1 @@
+gcc -Os -o ..\..\dist\mdif_viewer_win.exe -mwindows -I..\..\src ..\..\src\mdif.cpp mdif_viewer.cpp
