@@ -23,10 +23,10 @@ typedef struct mdif_struct {
     short width;
     short height;
 
-    char *red;
-    char *blue;
-    char *green;
-    char *alpha;
+    unsigned char *red;
+    unsigned char *blue;
+    unsigned char *green;
+    unsigned char *alpha;
 } mdif_t;
 
 void mdif_init(mdif_t* image, short width, short height);

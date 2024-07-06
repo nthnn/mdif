@@ -28,10 +28,10 @@ void mdif_init(mdif_t* image, short width, short height) {
     image->height = height;
 
     int pixel_count = width * height;
-    image->red   = (char*) malloc(pixel_count);
-    image->green = (char*) malloc(pixel_count);
-    image->blue  = (char*) malloc(pixel_count);
-    image->alpha = (char*) malloc(pixel_count);
+    image->red   = (unsigned char*) malloc(pixel_count);
+    image->green = (unsigned char*) malloc(pixel_count);
+    image->blue  = (unsigned char*) malloc(pixel_count);
+    image->alpha = (unsigned char*) malloc(pixel_count);
 }
 
 void mdif_free(mdif_t* image) {
@@ -66,10 +66,10 @@ int mdif_read(const char* filename, mdif_t* image) {
     }
 
     size_t pixel_count = image->width * image->height;
-    image->red      = (char*) malloc(pixel_count);
-    image->blue     = (char*) malloc(pixel_count);
-    image->green    = (char*) malloc(pixel_count);
-    image->alpha    = (char*) malloc(pixel_count);
+    image->red      = (unsigned char*) malloc(pixel_count);
+    image->blue     = (unsigned char*) malloc(pixel_count);
+    image->green    = (unsigned char*) malloc(pixel_count);
+    image->alpha    = (unsigned char*) malloc(pixel_count);
 
     if(!image->red ||
         !image->blue ||
@@ -80,10 +80,14 @@ int mdif_read(const char* filename, mdif_t* image) {
         return 0;
     }
 
-    if(fread(image->red, sizeof(char), pixel_count, file) != pixel_count ||
-        fread(image->blue, sizeof(char), pixel_count, file) != pixel_count ||
-        fread(image->green, sizeof(char), pixel_count, file) != pixel_count ||
-        fread(image->alpha, sizeof(char), pixel_count, file) != pixel_count
+    if(fread(image->red,    sizeof(unsigned char), pixel_count, file)
+            != pixel_count ||
+        fread(image->blue,  sizeof(unsigned char), pixel_count, file)
+            != pixel_count ||
+        fread(image->green, sizeof(unsigned char), pixel_count, file)
+            != pixel_count ||
+        fread(image->alpha, sizeof(unsigned char), pixel_count, file)
+            != pixel_count
     ) {
         fclose(file);
         return 0;
@@ -113,10 +117,14 @@ int mdif_write(const char* filename, mdif_t* image) {
     }
 
     size_t pixel_count = image->width * image->height;
-    if(fwrite(image->red, sizeof(char), pixel_count, file) != pixel_count ||
-        fwrite(image->blue, sizeof(char), pixel_count, file) != pixel_count ||
-        fwrite(image->green, sizeof(char), pixel_count, file) != pixel_count ||
-        fwrite(image->alpha, sizeof(char), pixel_count, file) != pixel_count) {
+    if(fwrite(image->red,    sizeof(unsigned char), pixel_count, file)
+            != pixel_count ||
+        fwrite(image->blue,  sizeof(unsigned char), pixel_count, file)
+            != pixel_count ||
+        fwrite(image->green, sizeof(unsigned char), pixel_count, file)
+            != pixel_count ||
+        fwrite(image->alpha, sizeof(unsigned char), pixel_count, file)
+            != pixel_count) {
         fclose(file);
         return 0;
     }
@@ -132,9 +140,9 @@ int mdif_grayscale(mdif_t* image, float* grayscale) {
     int pixel_count = image->width * image->height;
     for(int i = 0; i < pixel_count; i++) {
         float brightness =
-            0.299 * image->red[i] +
-            0.587 * image->green[i] +
-            0.114 * image->blue[i];
+            0.299 * (unsigned char) image->red[i] +
+            0.587 * (unsigned char) image->green[i] +
+            0.114 * (unsigned char) image->blue[i];
 
         grayscale[i] = brightness / 255.0;
     }
