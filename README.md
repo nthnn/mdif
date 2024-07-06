@@ -32,12 +32,14 @@ The `mdif_t` (a.k.a `mdif_struct`) is defined as follows:
 ```c
 typedef struct mdif_struct {
     char signature[2];
+
     short width;
     short height;
-    char *red;
-    char *blue;
-    char *green;
-    char *alpha;
+
+    unsigned char *red;
+    unsigned char *blue;
+    unsigned char *green;
+    unsigned char *alpha;
 } mdif_t;
 ```
 
