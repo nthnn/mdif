@@ -100,9 +100,13 @@ int png_to_mdif(const char* png_filename, const char* mdif_filename) {
     for(int y = 0; y < height; y++)
         free(row_pointers[y]);
 
-    int result = mdif_write(mdif_filename, &mdif_image);
-    mdif_free(&mdif_image);
+    mdif_error_t result = mdif_write(mdif_filename, &mdif_image);
+    if(result != MDIF_ERROR_NONE) {
+        fprintf(stderr, "Error: %s\r\n", mdif_error_message(result));
+        return 1;
+    }
 
+    mdif_free(&mdif_image);
     png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
     fclose(png_file);
 
@@ -121,13 +125,9 @@ int png_to_mdif(const char* png_filename, const char* mdif_filename) {
 int mdif_to_png(const char* mdif_filename, const char* png_filename) {
     mdif_t mdif_image;
 
-    int result = mdif_read(mdif_filename, &mdif_image);
-    if(!result) {
-        fprintf(
-            stderr,
-            "Error reading MDIF file %s\n",
-            mdif_filename
-        );
+    mdif_error_t result = mdif_read(mdif_filename, &mdif_image);
+    if(result != MDIF_ERROR_NONE) {
+        fprintf(stderr, "Error: %s\r\n", mdif_error_message(result));
         return 1;
     }
 
