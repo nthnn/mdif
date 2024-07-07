@@ -65,6 +65,9 @@ int mdif_read(const char* filename, mdif_t* image) {
         return 0;
     }
 
+    if(image->width > 1024 || image->height > 1024)
+        return 0;
+
     size_t pixel_count = image->width * image->height;
     image->red      = (unsigned char*) malloc(pixel_count);
     image->blue     = (unsigned char*) malloc(pixel_count);
@@ -98,6 +101,9 @@ int mdif_read(const char* filename, mdif_t* image) {
 }
 
 int mdif_write(const char* filename, mdif_t* image) {
+    if(image->width > 1024 || image->height > 1024)
+        return 0;
+
     FILE *file = fopen(filename, "wb");
     if(!file) return 0;
 
