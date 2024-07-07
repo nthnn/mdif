@@ -20,11 +20,16 @@
 class MDIFViewer : public QMainWindow {
 public:
     MDIFViewer(const QString& filename) {
-        if(!mdif_read(filename.toUtf8().constData(), &image)) {
+        mdif_error_t result = mdif_read(
+            filename.toUtf8().constData(),
+            &image
+        );
+
+        if(result != MDIF_ERROR_NONE) {
             QMessageBox::critical(
                 this,
                 tr("Error"),
-                tr("Failed to read MDIF file")
+                tr(mdif_error_message(result))
             );
             exit(-1);
         }
