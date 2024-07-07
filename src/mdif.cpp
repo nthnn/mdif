@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#ifdef ARDUINO
+#   include <SD.h>
+#   include <SPI.h>
+#else
+#   include <stdio.h>
+#   include <stdlib.h>
+#   include <string.h>
+#endif
 
 #include "mdif.h"
 
@@ -42,6 +47,8 @@ void mdif_free(mdif_t* image) {
 }
 
 mdif_error_t mdif_read(const char* filename, mdif_t* image) {
+    #ifndef ARDUINO
+
     FILE *file = fopen(filename, "rb");
     if(!file)
         return MDIF_ERROR_INVALID_FILE_HANDLE;
@@ -66,11 +73,15 @@ mdif_error_t mdif_read(const char* filename, mdif_t* image) {
         return MDIF_ERROR_READ;
     }
 
-    if(image->width < 1 || image->width > 1024)
+    if(image->width < 1 || image->width > 1024) {
+        fclose(file);
         return MDIF_ERROR_INVALID_WIDTH;
+    }
 
-    if(image->height < 1 || image->height > 1024)
+    if(image->height < 1 || image->height > 1024) {
+        fclose(file);
         return MDIF_ERROR_INVALID_HEIGHT;
+    }
 
     size_t pixel_count = image->width * image->height;
     image->red      = (unsigned char*) malloc(pixel_count);
@@ -101,10 +112,77 @@ mdif_error_t mdif_read(const char* filename, mdif_t* image) {
     }
 
     fclose(file);
+
+    #else
+
+    File file = SD.open(filename, FILE_READ);
+    if(!file)
+        return MDIF_ERROR_INVALID_FILE_HANDLE;
+
+    if(file.read(image->signature, 2) != 2) {
+        file.close();
+        return MDIF_ERROR_READ;
+    }
+
+    if(strncmp(image->signature, "NT", 2) != 0) {
+        file.close();
+        return MDIF_ERROR_INVALID_SIGNATURE;
+    }
+
+    if(file.read((unsigned char*) &image->width, sizeof(short))
+        != sizeof(short)) {
+        file.close();
+        return MDIF_ERROR_READ;
+    }
+
+    if(file.read((unsigned char*) &image->height, sizeof(short))
+        != sizeof(short)) {
+        file.close();
+        return MDIF_ERROR_READ;
+    }
+
+    if(image->width < 1 || image->width > 1024) {
+        file.close();
+        return MDIF_ERROR_INVALID_WIDTH;
+    }
+
+    if(image->height < 1 || image->height > 1024) {
+        file.close();
+        return MDIF_ERROR_INVALID_HEIGHT;
+    }
+
+    size_t pixel_count = image->width * image->height;
+    image->red   = (unsigned char*) malloc(pixel_count);
+    image->green = (unsigned char*) malloc(pixel_count);
+    image->blue  = (unsigned char*) malloc(pixel_count);
+    image->alpha = (unsigned char*) malloc(pixel_count);
+
+    if(!image->red      ||
+        !image->green   ||
+        !image->blue    ||
+        !image->alpha) {
+        file.close();
+        return MDIF_ERROR_CANNOT_ALLOCATE;
+    }
+
+    if(file.read(image->red, pixel_count)    != pixel_count ||
+        file.read(image->green, pixel_count) != pixel_count ||
+        file.read(image->blue, pixel_count)  != pixel_count ||
+        file.read(image->alpha, pixel_count) != pixel_count) {
+        file.close();
+        return MDIF_ERROR_READ;
+    }
+
+    file.close();
+
+    #endif
+
     return MDIF_ERROR_NONE;
 }
 
 mdif_error_t mdif_write(const char* filename, mdif_t* image) {
+    #ifndef ARDUINO
+
     if(image->width < 1 || image->width > 1024)
         return MDIF_ERROR_INVALID_WIDTH;
 
@@ -144,6 +222,47 @@ mdif_error_t mdif_write(const char* filename, mdif_t* image) {
     }
 
     fclose(file);
+
+    #else
+
+    if(image->width < 1 || image->width > 1024)
+        return MDIF_ERROR_INVALID_WIDTH;
+
+    if(image->height < 1 || image->height > 1024)
+        return MDIF_ERROR_INVALID_HEIGHT;
+
+    File file = SD.open(filename, FILE_WRITE);
+    if(!file)
+        return MDIF_ERROR_INVALID_FILE_HANDLE;
+
+    if(file.write(image->signature, 2) != 2) {
+        file.close();
+        return MDIF_ERROR_WRITE;
+    }
+
+    if(file.write((char*)&image->width, sizeof(short)) != sizeof(short)) {
+        file.close();
+        return MDIF_ERROR_WRITE;
+    }
+
+    if(file.write((char*)&image->height, sizeof(short)) != sizeof(short)) {
+        file.close();
+        return MDIF_ERROR_WRITE;
+    }
+
+    size_t pixel_count = image->width * image->height;
+    if(file.write(image->red, pixel_count)    != pixel_count ||
+        file.write(image->green, pixel_count) != pixel_count ||
+        file.write(image->blue, pixel_count)  != pixel_count ||
+        file.write(image->alpha, pixel_count) != pixel_count) {
+        file.close();
+        return MDIF_ERROR_WRITE;
+    }
+
+    file.close();
+
+    #endif
+
     return MDIF_ERROR_NONE;
 }
 
