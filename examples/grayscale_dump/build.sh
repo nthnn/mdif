@@ -1,1 +1,1 @@
-gcc -o ../../dist/grayscale_dump -I../../src ../../src/mdif.cpp grayscale_dump.cpp
+g++ -x c++ -o ../../dist/grayscale_dump -I../../src ../../src/mdif.cpp grayscale_dump.ino
