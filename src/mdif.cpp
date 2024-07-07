@@ -66,10 +66,10 @@ mdif_error_t mdif_read(const char* filename, mdif_t* image) {
         return MDIF_ERROR_READ;
     }
 
-    if(image->width > 1024)
+    if(image->width < 1 || image->width > 1024)
         return MDIF_ERROR_INVALID_WIDTH;
 
-    if(image->height > 1024)
+    if(image->height < 1 || image->height > 1024)
         return MDIF_ERROR_INVALID_HEIGHT;
 
     size_t pixel_count = image->width * image->height;
@@ -105,10 +105,10 @@ mdif_error_t mdif_read(const char* filename, mdif_t* image) {
 }
 
 mdif_error_t mdif_write(const char* filename, mdif_t* image) {
-    if(image->width > 1024)
+    if(image->width < 1 || image->width > 1024)
         return MDIF_ERROR_INVALID_WIDTH;
 
-    if(image->height > 1024)
+    if(image->height < 1 || image->height > 1024)
         return MDIF_ERROR_INVALID_HEIGHT;
 
     FILE *file = fopen(filename, "wb");
