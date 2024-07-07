@@ -129,13 +129,13 @@ mdif_error_t mdif_read(const char* filename, mdif_t* image) {
         return MDIF_ERROR_INVALID_SIGNATURE;
     }
 
-    if(file.read((unsigned char*) &image->width, sizeof(short))
+    if(file.read((uint8_t*) &image->width, sizeof(short))
         != sizeof(short)) {
         file.close();
         return MDIF_ERROR_READ;
     }
 
-    if(file.read((unsigned char*) &image->height, sizeof(short))
+    if(file.read((uint8_t*) &image->height, sizeof(short))
         != sizeof(short)) {
         file.close();
         return MDIF_ERROR_READ;
@@ -235,17 +235,17 @@ mdif_error_t mdif_write(const char* filename, mdif_t* image) {
     if(!file)
         return MDIF_ERROR_INVALID_FILE_HANDLE;
 
-    if(file.write((uint8_t*) image->signature, 2) != 2) {
+    if(file.write((const uint8_t*) image->signature, 2) != 2) {
         file.close();
         return MDIF_ERROR_WRITE;
     }
 
-    if(file.write((uint8_t*) &image->width, sizeof(short)) != sizeof(short)) {
+    if(file.write((const uint8_t*) &image->width, sizeof(short)) != sizeof(short)) {
         file.close();
         return MDIF_ERROR_WRITE;
     }
 
-    if(file.write((uint8_t*) &image->height, sizeof(short)) != sizeof(short)) {
+    if(file.write((const uint8_t*) &image->height, sizeof(short)) != sizeof(short)) {
         file.close();
         return MDIF_ERROR_WRITE;
     }
