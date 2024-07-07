@@ -77,7 +77,7 @@ To build MDIF tools on Ubuntu from source, simply follow the steps below:
     cd mdif # Move to the mdif repository directory
 
     # Install library dependencies
-    sudo apt install libpng-dev libjpeg-dev
+    sudo apt install libpng-dev libjpeg-dev qtmultimedia5-dev qtcreator
 
     # Build the MDIF tools
     sudo chmod +x ./build.sh
