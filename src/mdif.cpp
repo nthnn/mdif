@@ -235,17 +235,17 @@ mdif_error_t mdif_write(const char* filename, mdif_t* image) {
     if(!file)
         return MDIF_ERROR_INVALID_FILE_HANDLE;
 
-    if(file.write(image->signature, 2) != 2) {
+    if(file.write((uint8_t*) image->signature, 2) != 2) {
         file.close();
         return MDIF_ERROR_WRITE;
     }
 
-    if(file.write((char*)&image->width, sizeof(short)) != sizeof(short)) {
+    if(file.write((uint8_t*) &image->width, sizeof(short)) != sizeof(short)) {
         file.close();
         return MDIF_ERROR_WRITE;
     }
 
-    if(file.write((char*)&image->height, sizeof(short)) != sizeof(short)) {
+    if(file.write((uint8_t*) &image->height, sizeof(short)) != sizeof(short)) {
         file.close();
         return MDIF_ERROR_WRITE;
     }
