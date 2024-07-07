@@ -30,3 +30,4 @@ jobs:
       - name: Build Arduino library
         run: |
           arduino-cli compile --fqbn esp32:esp32:esp32wrover --library src --build-path build examples/load_mdif/load_mdif.ino
+          arduino-cli compile --fqbn esp32:esp32:esp32wrover --library src --build-path build examples/generate_gradient/generate_gradient.ino
