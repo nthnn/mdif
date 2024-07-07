@@ -9,7 +9,7 @@
 MDIF (Minimal Data Image Format) is a simple and efficient image format designed for use with Diwa, a lightweight implementation of Artificial Neural Networks. MDIF is optimized for environments with limited resources, such as microcontrollers with (specially MCUs with PSRAM), but it is also suitable for desktop environments.
 
 <p align="center">
-    <img src="extras/gradient.png" />
+    <img src="https://raw.githubusercontent.com/nthnn/mdif/main/extras/gradient.png" />
 </p>
 
 <p align="center">
