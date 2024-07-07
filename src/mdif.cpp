@@ -119,7 +119,7 @@ mdif_error_t mdif_read(const char* filename, mdif_t* image) {
     if(!file)
         return MDIF_ERROR_INVALID_FILE_HANDLE;
 
-    if(file.read(image->signature, 2) != 2) {
+    if(file.read((uint8_t*) image->signature, 2) != 2) {
         file.close();
         return MDIF_ERROR_READ;
     }
