@@ -128,11 +128,12 @@ int WINAPI WinMain(
         return -1;
     }
 
-    if(!mdif_read(mdifFilename, &image)) {
-        MessageBoxW(
+    mdif_error_t result = mdif_read(mdifFilename, &image);
+    if(result != MDIF_ERROR_NONE) {
+        MessageBox(
             NULL,
-            L"Failed to read MDIF file",
-            L"Error",
+            "Failed to read MDIF file",
+            mdif_error_message(result),
             MB_OK | MB_ICONERROR
         );
         return -1;
