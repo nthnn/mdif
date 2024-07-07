@@ -1,5 +1,11 @@
 # MDIF (Minimal Data Image Format)
 
+![Arduino Lint](https://github.com/nthnn/mdif/actions/workflows/arduino_lint.yml/badge.svg)
+![Arduino CI](https://github.com/nthnn/mdif/actions/workflows/arduino_ci.yml/badge.svg)
+![Build CI](https://github.com/nthnn/mdif/actions/workflows/build_ci.yml/badge.svg)
+![GitHub repo size](https://img.shields.io/github/repo-size/nthnn/mdif?logo=git&label=Repository%20Size)
+[![License](https://img.shields.io/badge/license-Apache%20License%20v2.0-blue.svg)](https://github.com/nthnn/mdif/blob/main/LICENSE)
+
 MDIF (Minimal Data Image Format) is a simple and efficient image format designed for use with Diwa, a lightweight implementation of Artificial Neural Networks. MDIF is optimized for environments with limited resources, such as microcontrollers with (specially MCUs with PSRAM), but it is also suitable for desktop environments.
 
 MDIF is designed to have a minimalistic image data structure that balances simplicity for functionality. It provides essential image handling capabilities while being lightweight enough to be used in resource-constrained environments. The primary use case for MDIF is with Diwa, a neural network library that supports various platforms.
