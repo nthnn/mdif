@@ -1,0 +1,22 @@
+name: Arduino CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        uses: sudo apt install libpng-dev libjpeg-dev qtmultimedia5-dev qtcreator
+
+      - name: Build Tools
+        uses: |
+          sudo chmod +x build.sh
+          ./build.sh
