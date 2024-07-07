@@ -14,7 +14,7 @@
         "url": "https://nthnn.github.io/"
       }
     ],
-    "license": "Apache License v2",
+    "license": "Apache-2.0",
     "homepage": "https://github.com/nthnn/mdif",
     "frameworks": "*",
     "platforms": ["espressif32", "espressif8266", "rp2040"]
