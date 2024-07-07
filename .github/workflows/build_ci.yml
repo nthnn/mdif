@@ -14,9 +14,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install Dependencies
-        uses: sudo apt install libpng-dev libjpeg-dev qtmultimedia5-dev qtcreator
+        run: sudo apt install libpng-dev libjpeg-dev qtmultimedia5-dev qtcreator
 
       - name: Build Tools
-        uses: |
+        run: |
           sudo chmod +x build.sh
           ./build.sh
