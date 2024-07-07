@@ -41,32 +41,36 @@ void mdif_free(mdif_t* image) {
     free(image->alpha);
 }
 
-int mdif_read(const char* filename, mdif_t* image) {
+mdif_error_t mdif_read(const char* filename, mdif_t* image) {
     FILE *file = fopen(filename, "rb");
-    if(!file) return 0;
+    if(!file)
+        return MDIF_ERROR_INVALID_FILE_HANDLE;
 
     if(fread(image->signature, sizeof(char), 2, file) != 2) {
         fclose(file);
-        return 0;
+        return MDIF_ERROR_READ;
     }
 
     if(strcmp(image->signature, "NT") != 0) {
         fclose(file);
-        return 0;
+        return MDIF_ERROR_INVALID_SIGNATURE;
     }
 
     if(fread(&image->width, sizeof(short), 1, file) != 1) {
         fclose(file);
-        return 0;
+        return MDIF_ERROR_READ;
     }
 
     if(fread(&image->height, sizeof(short), 1, file) != 1) {
         fclose(file);
-        return 0;
+        return MDIF_ERROR_READ;
     }
 
-    if(image->width > 1024 || image->height > 1024)
-        return 0;
+    if(image->width > 1024)
+        return MDIF_ERROR_INVALID_WIDTH;
+
+    if(image->height > 1024)
+        return MDIF_ERROR_INVALID_HEIGHT;
 
     size_t pixel_count = image->width * image->height;
     image->red      = (unsigned char*) malloc(pixel_count);
@@ -80,7 +84,7 @@ int mdif_read(const char* filename, mdif_t* image) {
         !image->alpha
     ) {
         fclose(file);
-        return 0;
+        return MDIF_ERROR_CANNOT_ALLOCATE;
     }
 
     if(fread(image->red,    sizeof(unsigned char), pixel_count, file)
@@ -93,33 +97,37 @@ int mdif_read(const char* filename, mdif_t* image) {
             != pixel_count
     ) {
         fclose(file);
-        return 0;
+        return MDIF_ERROR_READ;
     }
 
     fclose(file);
-    return 1;
+    return MDIF_ERROR_NONE;
 }
 
-int mdif_write(const char* filename, mdif_t* image) {
-    if(image->width > 1024 || image->height > 1024)
-        return 0;
+mdif_error_t mdif_write(const char* filename, mdif_t* image) {
+    if(image->width > 1024)
+        return MDIF_ERROR_INVALID_WIDTH;
+
+    if(image->height > 1024)
+        return MDIF_ERROR_INVALID_HEIGHT;
 
     FILE *file = fopen(filename, "wb");
-    if(!file) return 0;
+    if(!file)
+        return MDIF_ERROR_INVALID_FILE_HANDLE;
 
     if(fwrite(image->signature, sizeof(char), 2, file) != 2) {
         fclose(file);
-        return 0;
+        return MDIF_ERROR_WRITE;
     }
 
     if(fwrite(&image->width, sizeof(short), 1, file) != 1) {
         fclose(file);
-        return 0;
+        return MDIF_ERROR_WRITE;
     }
 
     if(fwrite(&image->height, sizeof(short), 1, file) != 1) {
         fclose(file);
-        return 0;
+        return MDIF_ERROR_WRITE;
     }
 
     size_t pixel_count = image->width * image->height;
@@ -132,16 +140,19 @@ int mdif_write(const char* filename, mdif_t* image) {
         fwrite(image->alpha, sizeof(unsigned char), pixel_count, file)
             != pixel_count) {
         fclose(file);
-        return 0;
+        return MDIF_ERROR_WRITE;
     }
 
     fclose(file);
-    return 1;
+    return MDIF_ERROR_NONE;
 }
 
-int mdif_grayscale(mdif_t* image, float* grayscale) {
-    if(!image || !grayscale)
-        return 0;
+mdif_error_t mdif_grayscale(mdif_t* image, float* grayscale) {
+    if(!image)
+        return MDIF_ERROR_IMAGE;
+
+    if(!grayscale)
+        return MDIF_ERROR_GRAYSCALE;
 
     int pixel_count = image->width * image->height;
     for(int i = 0; i < pixel_count; i++) {
@@ -153,5 +164,44 @@ int mdif_grayscale(mdif_t* image, float* grayscale) {
         grayscale[i] = brightness / 255.0;
     }
 
-    return 1;
+    return MDIF_ERROR_NONE;
+}
+
+const char* mdif_error_message(mdif_error_t error_num) {
+    switch(error_num) {
+        case MDIF_ERROR_IO:
+            return "I/O error";
+
+        case MDIF_ERROR_NONE:
+            return "None";
+
+        case MDIF_ERROR_INVALID_SIGNATURE:
+            return "Invalid MDIF signature";
+
+        case MDIF_ERROR_CANNOT_ALLOCATE:
+            return "Canot allocate memory for channels";
+
+        case MDIF_ERROR_INVALID_WIDTH:
+            return "Invalid image width (> 1024)";
+
+        case MDIF_ERROR_INVALID_HEIGHT:
+            return "Invalid image height (> 1024)";
+
+        case MDIF_ERROR_READ:
+            return "Error reading MDIF file";
+
+        case MDIF_ERROR_WRITE:
+            return "Error writing MDIF file";
+
+        case MDIF_ERROR_INVALID_FILE_HANDLE:
+            return "Invalid file handle";
+
+        case MDIF_ERROR_IMAGE:
+            return "Image error";
+
+        case MDIF_ERROR_GRAYSCALE:
+            return "Invalid grayscale pointer";
+    }
+
+    return "Unknown error";
 }
