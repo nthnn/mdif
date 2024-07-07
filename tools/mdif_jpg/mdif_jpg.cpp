@@ -76,16 +76,22 @@ int jpg_to_mdif(const char* infile, const char* output_file) {
     jpeg_destroy_decompress(&cinfo);
     fclose(input_file);
 
-    int result = mdif_write(output_file, &image);
-    mdif_free(&image);
+    mdif_error_t result = mdif_write(output_file, &image);
+    if(result != MDIF_ERROR_NONE) {
+        fprintf(stderr, "Error: %s\r\n", mdif_error_message(result));
+        return 1;
+    }
 
-    return !result;
+    mdif_free(&image);
+    return 0;
 }
 
 int mdif_to_jpg(const char* input_file, const char* outfile) {
     mdif_t image;
-    if(!mdif_read(input_file, &image)) {
-        fprintf(stderr, "Can't read %s\n", input_file);
+    mdif_error_t result = mdif_read(input_file, &image);
+
+    if(result != MDIF_ERROR_NONE) {
+        fprintf(stderr, "Error: %s\r\n", mdif_error_message(result));
         return 1;
     }
 
