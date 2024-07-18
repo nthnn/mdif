@@ -73,6 +73,15 @@ typedef struct mdif_struct {
 
 - **No Color Management**: The implementation does not support color profiles or any form of color management, which might be necessary for accurate color representation across different devices.
 
+## Quick Start
+
+MDIF viewer is availble on Docker to try it out.
+
+```shell
+docker pull nthnn/mdif
+docker run -it -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix mdif
+```
+
 ## Building Tools from Source
 
 ### Linux
