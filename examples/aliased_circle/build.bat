@@ -1,0 +1,1 @@
+g++ -o ..\..\dist\aliased_circle.exe -I..\..\src ..\..\src\mdif.cpp aliased_circle.cpp
