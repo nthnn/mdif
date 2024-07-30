@@ -286,6 +286,48 @@ mdif_error_t mdif_grayscale(mdif_t* image, float* grayscale) {
     return MDIF_ERROR_NONE;
 }
 
+mdif_error_t mdif_antialias(mdif_t* image, mdif_t* aliased_image) {
+    mdif_init(aliased_image, image->width, image->height);
+    if(aliased_image == NULL)
+        return MDIF_ERROR_INVALID_FILE_HANDLE;
+
+    #define mdif_aliasing_clamp(value, min, max) \
+        (value < min ? min : (value > max ? max : value))
+
+    short width = image->width,
+        height = image->height;
+
+    for(short i = 0; i < height; i++) {
+        for(short j = 0; j < width; j++) {
+            int r_sum = 0,
+                g_sum = 0,
+                b_sum = 0,
+                count = 0;
+
+            for(short k = -1; k <= 1; k++) {
+                for(short l = -1; l <= 1; l++) {
+                    short x = mdif_aliasing_clamp(j + l, 0, width - 1),
+                        y = mdif_aliasing_clamp(i + k, 0, height - 1);
+
+                    r_sum += image->red[y * width + x];
+                    g_sum += image->green[y * width + x];
+                    b_sum += image->blue[y * width + x];
+
+                    count++;
+                }
+            }
+
+            aliased_image->red[i * width + j] = r_sum / count;
+            aliased_image->green[i * width + j] = g_sum / count;
+            aliased_image->blue[i * width + j] = b_sum / count;
+            aliased_image->alpha[i * width + j] = image->alpha[i * width + j];
+        }
+    }
+    #undef mdif_aliasing_clamp
+
+    return MDIF_ERROR_NONE;
+}
+
 const char* mdif_error_message(mdif_error_t error_num) {
     switch(error_num) {
         case MDIF_ERROR_IO:

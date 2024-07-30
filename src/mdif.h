@@ -127,6 +127,20 @@ mdif_error_t mdif_write(const char* filename, mdif_t* image);
 mdif_error_t mdif_grayscale(mdif_t* image, float* grayscale);
 
 /**
+ * @brief Perform antialiasing on an MDIF image.
+ * 
+ * This function performs antialiasing on the given MDIF image using a simple box blur method. 
+ * The result is stored in a separate MDIF image structure provided by the user. 
+ * The box blur technique averages the pixel values within a 3x3 kernel to smooth out the image.
+ * 
+ * @param[in] image Pointer to the MDIF image structure that needs to be antialiased.
+ * @param[out] aliased_image Pointer to the MDIF image structure where the antialiased image will be stored.
+ * 
+ * @return An mdif_error_t error code indicating the success or failure of the operation.
+ */
+mdif_error_t mdif_antialias(mdif_t* image, mdif_t* aliased_image);
+
+/**
  * @brief Get a human-readable error message.
  * 
  * This function returns a human-readable error message corresponding to the specified MDIF error code.
