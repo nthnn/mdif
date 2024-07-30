@@ -1,6 +1,6 @@
 {
     "name": "mdif",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Minimal Data Image Format (MDIF) is a lightweight image format with minimal data structure and integration with Diwa in mind that balances both simplicity and functionality.",
     "keywords": ["minimal", "image-processing", "image-viewer", "image-format", "rgba", "library", "image-library"],
     "repository": {
